@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Informasi Stok Katalog</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body onload="tampilkanKatalog()">
+    <div class="header-katalog">
+            <button class="back-btn" onclick="window.location.href='dashboard.html'">← Kembali ke Dashboard</button>
+        </div>
+    
+    <table id="tabelStok">
+        <thead>
+          <tr>
+            <th>
+              <h1 class="h1-stok">Informasi Stok Katalog</h1>
+            </th>
+          </tr>
+        </thead>
+        <thead>
+            <tr>
+                <th>No</th>
+                <th>Kode</th>
+                <th>Nama Barang</th>
+                <th>Jenis</th>
+                <th>Edisi</th>
+                <th>Stok</th>
+                <th>Harga</th>
+                <th>Cover</th>
+            </tr>
+        </thead>
+        <tbody>
+            <!-- Data akan dimuat lewat JS -->
+        </tbody>
+    </table>
+
+
+
+    <script src="js/data.js"></script>
+    <script>
+        function tampilkanKatalog() {
+            const tbody = document.querySelector("#tabelStok tbody");
+            tbody.innerHTML = ""; 
+
+            dataKatalogBuku.forEach((item, index) => {
+                const row = document.createElement("tr");
+                row.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td>${item.kodeBarang}</td>
+                    <td>${item.namaBarang}</td>
+                    <td>${item.jenisBarang}</td>
+                    <td>${item.edisi}</td>
+                    <td>${item.stok}</td>
+                    <td>${item.harga}</td>
+                    <td><img src="${item.cover}" alt="${item.namaBarang}"></td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+    </script>
+</body>
+</html>

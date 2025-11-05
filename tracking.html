@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tracking Pengiriman</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="tracking-container">
+        <div class="header-tracking">
+            <button class="back-btn" onclick="window.location.href='dashboard.html'">← Kembali ke Dashboard</button>
+            <h1>Informasi Pengiriman</h1>
+        </div>
+
+        <div class="tracking-form">
+            <label for="nomorDO">Masukkan Nomor Delivery Order:</label>
+            <input type="text" id="nomorDO" placeholder="Contoh: 20230012">
+            <button onclick="tampilkanTracking()">Cari</button>
+        </div>
+
+        <div id="hasilTracking" class="tracking-result" style="display:none;">
+            <h2>Hasil Tracking</h2>
+            <p><strong>Nama Pemesan:</strong> <span id="namaPemesan"></span></p>
+            <p><strong>Status Pengiriman:</strong> <span id="status"></span></p>
+
+            <div class="progress-bar">
+                <div id="progress" class="progress"></div>
+            </div>
+
+            <h3>Detail Pengiriman</h3>
+            <table>
+                <tr><th>Ekspedisi</th><td id="ekspedisi"></td></tr>
+                <tr><th>Tanggal Kirim</th><td id="tanggal"></td></tr>
+                <tr><th>Jenis Paket</th><td id="jenis"></td></tr>
+                <tr><th>Total Pembayaran</th><td id="total"></td></tr>
+            </table>
+
+            <h3>Riwayat Perjalanan</h3>
+            <ul id="riwayat"></ul>
+        </div>
+    </div>
+
+    <script src="js/data.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>

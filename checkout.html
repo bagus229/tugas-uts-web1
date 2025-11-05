@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pemesanan Buku</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="checkout-container">
+    <h1>Pemesanan Buku</h1>
+
+    <section class="card">
+      <h2>Form Pemesanan</h2>
+      <form id="formPemesanan">
+        <div class="form-group">
+          <label for="pilihBuku">Pilih Buku</label>
+          <select id="pilihBuku"></select>
+        </div>
+        <div class="form-group">
+          <label for="jumlahBuku">Jumlah</label>
+          <input type="number" id="jumlahBuku" min="1" placeholder="Masukkan jumlah" required>
+        </div>
+        <button type="button" onclick="tambahPesanan()">Tambah ke Keranjang</button>
+      </form>
+    </section>
+
+    <section class="card">
+      <h2>Keranjang Pemesanan</h2>
+      <table id="tabelPemesanan">
+        <thead>
+          <tr>
+            <th>Nama Buku</th>
+            <th>Harga</th>
+            <th>Jumlah</th>
+            <th>Total</th>
+            <th>Aksi</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+      <h3 id="totalBayar">Total Bayar: Rp0</h3>
+    </section>
+
+    <section class="card">
+      <h2>Informasi Pemesan & Pembayaran</h2>
+      <form id="formInfo">
+        <div class="form-group">
+          <label>Nama Lengkap</label>
+          <input type="text" id="namaPemesan" placeholder="Masukkan nama lengkap" required>
+        </div>
+        <div class="form-group">
+          <label>Alamat</label>
+          <textarea id="alamatPemesan" placeholder="Masukkan alamat pengiriman" required></textarea>
+        </div>
+        <div class="form-group">
+          <label>Metode Pembayaran</label>
+          <select id="metodePembayaran">
+            <option value="Transfer Bank">Transfer Bank</option>
+            <option value="COD">COD (Bayar di Tempat)</option>
+            <option value="E-Wallet">E-Wallet (Dana / OVO / Gopay)</option>
+          </select>
+        </div>
+        <button type="button" onclick="tampilkanPesanan()">Tampilkan Ringkasan</button>
+      </form>
+    </section>
+
+    <section class="card" id="hasilPesanan" style="display: none;">
+      <h2>Ringkasan Pesanan</h2>
+      <div id="outputPesanan"></div>
+    </section>
+
+    <a href="dashboard.html" class="kembali-btn">Kembali ke Dashboard</a>
+  </div>
+
+  <script>
+    const dataBuku = [
+      { nama: "Pengantar Ilmu Komunikasi", harga: 180000 },
+      { nama: "Manajemen Keuangan", harga: 220000 },
+      { nama: "Kepemimpinan", harga: 150000 },
+      { nama: "Mikrobiologi Dasar", harga: 200000 },
+      { nama: "Perkembangan Anak Usia Dini", harga: 250000 }
+    ];
+
+    const pilihBuku = document.getElementById("pilihBuku");
+    dataBuku.forEach((buku, index) => {
+      const opt = document.createElement("option");
+      opt.value = index;
+      opt.textContent = buku.nama + " - Rp " + buku.harga.toLocaleString("id-ID");
+      pilihBuku.appendChild(opt);
+    });
+
+    let keranjang = [];
+
+    function tambahPesanan() {
+      const idx = pilihBuku.value;
+      const jumlah = parseInt(document.getElementById("jumlahBuku").value);
+      if (!jumlah || jumlah <= 0 || idx === "") {
+        alert("Pilih buku dan jumlah yang valid!");
+        return;
+      }
+
+      const buku = dataBuku[idx];
+      const total = buku.harga * jumlah;
+      keranjang.push({ nama: buku.nama, harga: buku.harga, jumlah, total });
+      renderTabel();
+    }
+
+    function renderTabel() {
+      const tbody = document.querySelector("#tabelPemesanan tbody");
+      tbody.innerHTML = "";
+      let totalBayar = 0;
+
+      keranjang.forEach((item, i) => {
+        totalBayar += item.total;
+        const row = `
+          <tr>
+            <td>${item.nama}</td>
+            <td>Rp ${item.harga.toLocaleString("id-ID")}</td>
+            <td>${item.jumlah}</td>
+            <td>Rp ${item.total.toLocaleString("id-ID")}</td>
+            <td><button onclick="hapusItem(${i})">Hapus</button></td>
+          </tr>`;
+        tbody.innerHTML += row;
+      });
+
+      document.getElementById("totalBayar").textContent =
+        "Total Bayar: Rp " + totalBayar.toLocaleString("id-ID");
+    }
+
+    function hapusItem(index) {
+      keranjang.splice(index, 1);
+      renderTabel();
+    }
+
+    function tampilkanPesanan() {
+      if (keranjang.length === 0) {
+        alert("Keranjang masih kosong!");
+        return;
+      }
+      const nama = document.getElementById("namaPemesan").value;
+      const alamat = document.getElementById("alamatPemesan").value;
+      const metode = document.getElementById("metodePembayaran").value;
+
+      if (!nama || !alamat) {
+        alert("Isi semua data pemesan!");
+        return;
+      }
+
+      let totalBayar = keranjang.reduce((acc, item) => acc + item.total, 0);
+
+      const transaksi = {
+        nama,
+        alamat,
+        metode,
+        total: totalBayar,
+        tanggal: new Date().toLocaleString(),
+        detail: keranjang
+      };
+
+      const history = JSON.parse(localStorage.getItem("riwayatTransaksi")) || [];
+      history.push(transaksi);
+      localStorage.setItem("riwayatTransaksi", JSON.stringify(history));
+
+      let ringkasan = `<p><strong>Nama Pemesan:</strong> ${nama}</p>
+                       <p><strong>Alamat:</strong> ${alamat}</p>
+                       <p><strong>Metode Pembayaran:</strong> ${metode}</p>
+                       <h3>Detail Pesanan:</h3><ul>`;
+
+      keranjang.forEach(item => {
+        ringkasan += `<li>${item.nama} - ${item.jumlah} pcs (Rp ${item.total.toLocaleString("id-ID")})</li>`;
+      });
+
+      ringkasan += `</ul><p><strong>Total Bayar:</strong> Rp ${totalBayar.toLocaleString("id-ID")}</p>`;
+
+      document.getElementById("outputPesanan").innerHTML = ringkasan;
+      document.getElementById("hasilPesanan").style.display = "block";
+
+      keranjang = [];
+      renderTabel();
+      alert("Pesanan berhasil disimpan ke riwayat transaksi!");
+    }
+  </script>
+  <script src="js/main.js"></script>
+</body>
+</html>

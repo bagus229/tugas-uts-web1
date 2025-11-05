@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard Toko Buku</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="dashboard-container">
+    <header>
+      <h1 id="greeting">Selamat Datang!</h1>
+      <p>Pilih menu di bawah:</p>
+    </header>
+
+    <main class="menu-grid">
+      <button onclick="location.href='stok.html'">Informasi Stok/Katalog</button>
+      <button onclick="location.href='tracking.html'">Tracking Pengiriman</button>
+      <button onclick="location.href='checkout.html'">Laporan Pemesanan</button>
+      <button onclick="location.href='history.html'">History Transaksi</button>
+    </main>
+  </div>
+
+  <script src="js/main.js"></script>
+  <script>
+    tampilkanGreeting();
+  </script>
+</body>
+</html>
