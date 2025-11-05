@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard - Riwayat Transaksi</title>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="container">
+    <h1>Riwayat Transaksi Buku</h1>
+    <table id="tabelTransaksi">
+      <thead>
+        <tr>
+          <th>Nama Pemesan</th>
+          <th>Metode Pembayaran</th>
+          <th>Total</th>
+          <th>Tanggal</th>
+        </tr>
+      </thead>
+      <tbody></tbody>
+    </table>
+
+    <a href="checkout.html" class="btn">Kembali ke Pemesanan</a>
+  </div>
+
+  <script>
+    const tbody = document.querySelector("#tabelTransaksi tbody");
+    const history = JSON.parse(localStorage.getItem("riwayatTransaksi")) || [];
+
+    function tampilkanHistory() {
+      tbody.innerHTML = "";
+      if (history.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="4">Belum ada transaksi.</td></tr>`;
+        return;
+      }
+
+      history.forEach(item => {
+        const row = `
+          <tr>
+            <td>${item.nama}</td>
+            <td>${item.metode}</td>
+            <td>Rp ${item.total.toLocaleString("id-ID")}</td>
+            <td>${item.tanggal}</td>
+          </tr>`;
+        tbody.innerHTML += row;
+      });
+    }
+
+    function hapusHistory() {
+      if (confirm("Hapus semua riwayat transaksi?")) {
+        localStorage.removeItem("riwayatTransaksi");
+        tampilkanHistory();
+      }
+    }
+
+    tampilkanHistory();
+  </script>
+</body>
+</html>
